@@ -175,6 +175,9 @@
 
   /* a rotação fica no wrapper; a animação (que zera o transform) fica no .pol interno */
   .polwrap { width:min(54vw, 205px); }
+  .duopol { display:flex; gap:12px; justify-content:flex-start; margin-top:18px; }
+  .duopol .polwrap { width:min(41vw, 160px); }
+  .duopol .cap { font-size:10.5px; }
 
   /* ---------- 6½. efeitos colaterais ---------- */
   #s-colateral { background:linear-gradient(165deg, #2a1b3d, #5e3a8c); align-items:center; text-align:center; }
@@ -184,11 +187,13 @@
 
   /* ---------- rolo da câmera ---------- */
   #s-rolo { background:#120a1c; }
-  #s-rolo .pols { position:relative; height:500px; margin-top:12px; }
-  #s-rolo .polwrap { position:absolute; width:min(42vw, 165px); }
-  #s-rolo .polwrap.p1 { left:2px; top:0; transform:rotate(-5deg); }
-  #s-rolo .polwrap.p2 { right:2px; top:112px; transform:rotate(4deg); }
-  #s-rolo .polwrap.p3 { left:50%; top:248px; transform:translateX(-50%) rotate(-2deg); }
+  #s-rolo .pols { display:grid; grid-template-columns:1fr 1fr; gap:16px 12px; margin-top:16px; }
+  #s-rolo .polwrap { width:100%; }
+  #s-rolo .polwrap.p1 { transform:rotate(-4deg); }
+  #s-rolo .polwrap.p2 { transform:rotate(3deg); }
+  #s-rolo .polwrap.p3 { transform:rotate(-2.5deg); }
+  #s-rolo .polwrap.p4 { transform:rotate(4deg); }
+  #s-rolo .cap { font-size:10.5px; }
 
   /* ---------- 7. estatísticas ---------- */
   #s-stats { background:linear-gradient(165deg, #ffd6e7, #ffb3d1); color:#3a0d2e; }
@@ -205,8 +210,23 @@
 
   /* ---------- 7½. date favorito: lámen ---------- */
   #s-lamen { background:linear-gradient(165deg, #a82711, #ff7a3c); }
-  #s-lamen .lamenbig { font-size:clamp(84px, 26vw, 110px); line-height:1; }
-  #s-lamen .sub { font-size:15px; opacity:.92; margin-top:14px; line-height:1.55; }
+  #s-lamen .sub { font-size:14.5px; opacity:.92; margin-top:16px; line-height:1.55; }
+
+  /* ---------- 7¾. vice-campeão: caipirinha com bacon ---------- */
+  #s-vice { background:linear-gradient(165deg, #1f5c23, #79a82e); }
+  #s-vice .sub { font-size:14.5px; opacity:.92; margin-top:16px; line-height:1.55; }
+
+  /* ---------- halloween ---------- */
+  #s-hellowen { background:linear-gradient(165deg, #2e0a4f, #0f3d2e); align-items:center; text-align:center; }
+  #s-hellowen .polwrap { width:min(56vw, 215px); transform:rotate(2deg); }
+  #s-hellowen .titulo { font-family:'Unbounded'; font-weight:900; font-size:20px; margin-top:20px; line-height:1.3; }
+  #s-hellowen .sub { font-size:13px; opacity:.85; margin-top:8px; }
+
+  /* ---------- a musa ---------- */
+  #s-musa { background:linear-gradient(165deg, #3d0a2e, #7a0f54); align-items:center; text-align:center; }
+  #s-musa .polwrap { width:min(54vw, 205px); transform:rotate(-2deg); }
+  #s-musa .titulo { font-family:'Unbounded'; font-weight:900; font-size:22px; margin-top:20px; }
+  #s-musa .sub { font-size:13.5px; opacity:.88; margin-top:8px; }
 
   /* ---------- 8. kuromi vs my melody ---------- */
   #s-sanrio { background:linear-gradient(155deg, #160b22, #3d1146); align-items:center; text-align:center; }
@@ -384,9 +404,44 @@
   <section class="slide" id="s-lamen">
     <div class="blob" style="width:260px;height:260px;background:#ffd900;top:-70px;right:-70px;"></div>
     <div class="kicker up">o date nº 1 de 2025/26</div>
-    <div class="lamenbig pop">🍜</div>
-    <div class="display up d2" style="font-size:clamp(36px,12vw,48px);">comer<br>lámen</div>
-    <p class="sub up d3">Disparado em primeiro lugar.<br>Os outros dates nem competiram.</p>
+    <div class="display up d1" style="font-size:clamp(34px,11vw,44px);">comer<br>lámen 🍜</div>
+    <div class="duopol">
+      <div class="polwrap" style="transform:rotate(-3deg);">
+        <div class="pol up d2">
+          <img src="fotos/lamen1.jpg" alt="de mãos dadas na mesa do lámen">
+          <div class="cap">protocolo pré-lámen 🤝</div>
+        </div>
+      </div>
+      <div class="polwrap" style="transform:rotate(2.5deg);">
+        <div class="pol up d3">
+          <img src="fotos/lamen2.jpg" alt="ela na mesa, foto tremida">
+          <div class="cap">foto tremida (a fome ganhou)</div>
+        </div>
+      </div>
+    </div>
+    <p class="sub up d4">Disparado em primeiro lugar.<br>Os outros dates nem competiram.</p>
+  </section>
+
+  <!-- 7¾. VICE-CAMPEÃO -->
+  <section class="slide" id="s-vice">
+    <div class="blob" style="width:240px;height:240px;background:#d4ff5e;bottom:-80px;right:-70px;opacity:.4;"></div>
+    <div class="kicker up">o vice-campeão dos dates</div>
+    <div class="display up d1" style="font-size:clamp(30px,9.5vw,38px);">caipirinha<br>com bacon 🥓</div>
+    <div class="duopol">
+      <div class="polwrap" style="transform:rotate(2.5deg);">
+        <div class="pol up d2">
+          <img src="fotos/date1.jpg" alt="caipirinhas com bacon na mesa">
+          <div class="cap">sim, isso é bacon no copo</div>
+        </div>
+      </div>
+      <div class="polwrap" style="transform:rotate(-2deg);">
+        <div class="pol up d3">
+          <img src="fotos/samedate.jpg" alt="ela fotografando os copos">
+          <div class="cap">a fotógrafa, flagrada</div>
+        </div>
+      </div>
+    </div>
+    <p class="sub up d4">Perdeu pro lámen no detalhe.<br>Recurso negado pela comissão. 🍜⚖️</p>
   </section>
 
   <!-- 8. KUROMI VS MY MELODY -->
@@ -424,7 +479,41 @@
           <div class="cap">perseguição consentida desde 2023</div>
         </div>
       </div>
+      <div class="polwrap p4">
+        <div class="pol up d4">
+          <img src="fotos/elabrava.jpg" alt="ela mostrando o dedo pra câmera">
+          <div class="cap">reação a: "deixa eu tirar uma foto"</div>
+        </div>
+      </div>
     </div>
+  </section>
+
+  <!-- 8¾. HALLOWEEN -->
+  <section class="slide" id="s-hellowen">
+    <div class="blob" style="width:240px;height:240px;background:#39ff8a;top:-90px;left:-80px;opacity:.25;"></div>
+    <div class="kicker up">edição especial: halloween</div>
+    <div class="polwrap">
+      <div class="pol pop">
+        <img src="fotos/hellowen.jpg" alt="os dois de coringa no metrô">
+        <div class="cap">maquiagem: dela. ideia: péssima. saldo: perfeito.</div>
+      </div>
+    </div>
+    <div class="titulo up d2">vivemos numa<br>sociedade 🃏</div>
+    <p class="sub up d3">(metrô de são paulo, zero arrependimentos)</p>
+  </section>
+
+  <!-- 8⅞. A MUSA -->
+  <section class="slide" id="s-musa">
+    <div class="blob" style="width:260px;height:260px;background:#ff2e88;bottom:-90px;right:-80px;opacity:.4;"></div>
+    <div class="kicker up">a musa oficial da retrospectiva</div>
+    <div class="polwrap">
+      <div class="pol pop">
+        <img src="fotos/fotodelalinda.jpg" alt="foto dela linda">
+        <div class="cap">musa, 2023–∞ 🌙</div>
+      </div>
+    </div>
+    <div class="titulo up d2">a mais linda. 🌙</div>
+    <p class="sub up d3">Eleita por unanimidade.<br>Composição do júri: eu.</p>
   </section>
 
   <!-- 9. PLAYLIST -->
