@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a0533">
+<title>baneplays & isillybunny — a retrospectiva 🍒</title>
+<meta property="og:title" content="baneplays & isillybunny — a retrospectiva 🍒">
+<meta property="og:description" content="12.06.2026 • feita 100% com amor (e zero orçamento).">
+<meta property="og:url" content="https://baneplayss.github.io/pra-kaylla/">
+<meta property="og:image" content="https://baneplayss.github.io/pra-kaylla/fotos/2.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍒</text></svg>">
+<link rel="preload" as="image" href="fotos/Untitled.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Inter:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { height:100%; }
+  body {
+    background:#0a0014;
+    font-family:'Inter', system-ui, sans-serif;
+    color:#fff;
+    overflow:hidden;
+    user-select:none;
+    -webkit-user-select:none;
+  }
+  .stage {
+    position:relative;
+    width:100%;
+    height:100dvh;
+    margin:0 auto;
+    overflow:hidden;
+    touch-action:manipulation;
+  }
+  @media (min-width:560px) {
+    body { display:grid; place-items:center; background:radial-gradient(circle at 30% 20%, #1c0633, #060010 70%); }
+    .stage { width:400px; height:min(94vh, 840px); border-radius:28px; box-shadow:0 30px 80px rgba(255,46,136,.25), 0 0 0 1px rgba(255,255,255,.08); }
+  }
+
+  /* ---------- barras de progresso (stories) ---------- */
+  .bars {
+    position:absolute; top:0; left:0; right:0;
+    display:flex; gap:4px;
+    padding:14px 14px 0;
+    z-index:50;
+  }
+  .bars .seg { flex:1; height:3px; border-radius:99px; background:rgba(255,255,255,.28); overflow:hidden; }
+  .bars .seg .fill { width:0%; height:100%; background:#fff; border-radius:99px; }
+
+  .brand {
+    position:absolute; top:26px; left:16px; right:16px;
+    display:flex; justify-content:space-between; align-items:center;
+    z-index:50; font-size:11px; font-weight:600;
+    letter-spacing:.14em; text-transform:uppercase; opacity:.85;
+  }
+
+  /* ---------- slides ---------- */
+  .slide {
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:64px 28px 48px;
+    opacity:0; visibility:hidden;
+    transition:opacity .35s ease, visibility .35s;
+    overflow:hidden;
+  }
+  .slide.active { opacity:1; visibility:visible; }
+
+  .kicker {
+    font-size:12px; font-weight:800; letter-spacing:.18em;
+    text-transform:uppercase; opacity:.8; margin-bottom:14px;
+  }
+  .display {
+    font-family:'Unbounded', sans-serif;
+    font-weight:900; line-height:1.02;
+  }
+  .bignum {
+    font-family:'Unbounded', sans-serif;
+    font-weight:900;
+    font-size:clamp(72px, 26vw, 118px);
+    line-height:1;
+    letter-spacing:-.02em;
+    text-shadow:0 0 44px rgba(255,255,255,.35);
+  }
+
+  /* animações de entrada — recomeçam toda vez que o slide vira .active */
+  .slide.active .up   { animation:rise .7s cubic-bezier(.2,.9,.3,1) both; }
+  .slide.active .up.d1{ animation-delay:.12s; }
+  .slide.active .up.d2{ animation-delay:.24s; }
+  .slide.active .up.d3{ animation-delay:.36s; }
+  .slide.active .up.d4{ animation-delay:.48s; }
+  .slide.active .up.d5{ animation-delay:.60s; }
+  .slide.active .pop  { animation:pop .6s cubic-bezier(.2,1.4,.4,1) both; animation-delay:.15s; }
+  @keyframes rise { from { opacity:0; transform:translateY(26px); } to { opacity:1; transform:none; } }
+  @keyframes pop  { from { opacity:0; transform:scale(.6) rotate(-4deg); } to { opacity:1; transform:none; } }
+
+  .blob { position:absolute; border-radius:50%; filter:blur(60px); opacity:.55; pointer-events:none; }
+
+  .marquee { white-space:nowrap; font-family:'Unbounded'; font-weight:900; font-size:32px; opacity:.25; }
+  .marquee span { display:inline-block; padding-right:24px; animation:slide 16s linear infinite; }
+  .marquee.rev span { animation-direction:reverse; }
+  @keyframes slide { to { transform:translateX(-50%); } }
+  /* economiza CPU/bateria: anima só o que está visível */
+  .slide:not(.active) .marquee span { animation-play-state:paused; }
+  #cover.hidden .floatheart, #cover.hidden .heartbig { animation-play-state:paused; }
+
+  /* ---------- capa ---------- */
+  #cover {
+    position:absolute; inset:0; z-index:100;
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+    text-align:center; padding:32px;
+    background:linear-gradient(160deg, rgba(26,5,51,.82) 0%, rgba(61,10,94,.78) 55%, rgba(122,15,84,.84) 100%), url("fotos/Untitled.jpg") center/cover;
+    transition:opacity .5s ease, visibility .5s;
+  }
+  #cover.hidden { opacity:0; visibility:hidden; }
+  #cover .heartbig { font-size:64px; animation:beat 1.4s ease-in-out infinite; }
+  @keyframes beat { 0%,100% { transform:scale(1); } 12% { transform:scale(1.18); } 24% { transform:scale(1); } 36% { transform:scale(1.12); } 48% { transform:scale(1); } }
+  #cover h1 { font-family:'Unbounded'; font-weight:900; font-size:30px; margin:20px 0 10px; line-height:1.15; }
+  #cover p { opacity:.8; font-size:14px; max-width:280px; }
+  #startBtn {
+    margin-top:34px; border:none; cursor:pointer;
+    font-family:'Unbounded'; font-weight:700; font-size:15px;
+    color:#1a0533; background:#fff;
+    padding:16px 38px; border-radius:99px;
+    box-shadow:0 8px 30px rgba(255,46,136,.5);
+    animation:pulsebtn 2.2s ease-in-out infinite;
+  }
+  #startBtn:active { animation:none; transform:scale(.94); }
+  @keyframes pulsebtn { 0%,100% { transform:scale(1); } 50% { transform:scale(1.06); } }
+  .floatheart { position:absolute; font-size:22px; opacity:.55; animation:floaty 5s ease-in-out infinite; }
+  @keyframes floaty { 0%,100% { transform:translateY(0) rotate(-6deg); } 50% { transform:translateY(-22px) rotate(8deg); } }
+
+  /* ---------- 1. dias juntos ---------- */
+  #s-dias { background:linear-gradient(165deg, #ff2e88, #8b00ff); }
+  #s-dias .sub { font-size:17px; opacity:.92; margin-top:16px; line-height:1.5; }
+  .livesec { margin-top:16px; font-size:13.5px; opacity:.9; line-height:1.55; font-variant-numeric:tabular-nums; }
+  .livesec b { font-weight:800; }
+
+  /* ---------- 2. o pedido ---------- */
+  #s-pedido { background:linear-gradient(165deg, #ff8a00, #ff2e4f); }
+  .pedidocard {
+    background:rgba(255,255,255,.16);
+    border:1px dashed rgba(255,255,255,.55);
+    border-radius:18px; padding:16px 18px;
+    backdrop-filter:blur(4px);
+    margin-top:14px;
+  }
+  .pedidocard .data { font-family:'Unbounded'; font-weight:700; font-size:13px; letter-spacing:.1em; opacity:.9; }
+  .pedidocard .tt { font-family:'Unbounded'; font-weight:900; font-size:19px; margin-top:6px; }
+  .pedidocard .ds { font-size:13.5px; margin-top:6px; opacity:.92; line-height:1.45; }
+  #s-pedido .punch { margin-top:18px; font-weight:800; font-size:16px; }
+
+  /* ---------- 3. te amo ---------- */
+  #s-teamo { background:linear-gradient(160deg, rgba(255,8,68,.85), rgba(139,0,176,.85)), url("fotos/4.jpg") center/cover; justify-content:space-between; padding-top:80px; padding-bottom:40px; }
+  #s-teamo .core { padding:10px 0; }
+
+  /* ---------- 4. becks ---------- */
+  #s-becks { background:linear-gradient(165deg, rgba(17,75,42,.88), rgba(54,179,95,.82)), url("fotos/9.jpg") center/cover; justify-content:space-between; padding-top:80px; padding-bottom:40px; }
+  #s-becks .core { padding:10px 0; }
+  #s-becks .sub { font-size:15px; opacity:.92; margin-top:14px; line-height:1.55; }
+
+  /* ---------- polaroids ---------- */
+  .pol {
+    background:#fff; padding:8px 8px 10px; border-radius:6px;
+    box-shadow:0 14px 34px rgba(0,0,0,.45);
+    width:100%;
+  }
+  .pol img { width:100%; display:block; border-radius:3px; }
+  .pol .cap { color:#222; font-size:11.5px; font-weight:600; text-align:center; margin-top:8px; font-style:italic; }
+
+  /* a rotação fica no wrapper; a animação (que zera o transform) fica no .pol interno */
+  .polwrap { width:min(54vw, 205px); }
+
+  /* ---------- 6½. efeitos colaterais ---------- */
+  #s-colateral { background:linear-gradient(165deg, #2a1b3d, #5e3a8c); align-items:center; text-align:center; }
+  #s-colateral .polwrap { transform:rotate(2.5deg); }
+  #s-colateral .titulo { font-family:'Unbounded'; font-weight:900; font-size:21px; margin-top:22px; line-height:1.3; }
+  #s-colateral .sub { font-size:14px; opacity:.88; margin-top:10px; line-height:1.5; }
+
+  /* ---------- rolo da câmera ---------- */
+  #s-rolo { background:#120a1c; }
+  #s-rolo .pols { position:relative; height:500px; margin-top:12px; }
+  #s-rolo .polwrap { position:absolute; width:min(42vw, 165px); }
+  #s-rolo .polwrap.p1 { left:2px; top:0; transform:rotate(-5deg); }
+  #s-rolo .polwrap.p2 { right:2px; top:112px; transform:rotate(4deg); }
+  #s-rolo .polwrap.p3 { left:50%; top:248px; transform:translateX(-50%) rotate(-2deg); }
+
+  /* ---------- 7. estatísticas ---------- */
+  #s-stats { background:linear-gradient(165deg, #ffd6e7, #ffb3d1); color:#3a0d2e; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:26px; }
+  .card {
+    background:rgba(255,255,255,.55);
+    border-radius:20px; padding:18px 16px;
+    box-shadow:0 4px 18px rgba(58,13,46,.08);
+  }
+  .card .n { font-family:'Unbounded'; font-weight:900; font-size:28px; color:#c4005f; }
+  .card .l { font-size:12px; font-weight:600; margin-top:6px; line-height:1.35; }
+
+  /* ---------- 8. kuromi vs my melody ---------- */
+  #s-sanrio { background:linear-gradient(155deg, #160b22, #3d1146); align-items:center; text-align:center; }
+  #s-sanrio .polwrap { transform:rotate(-2deg); }
+  #s-sanrio .veredito { font-family:'Unbounded'; font-weight:900; font-size:22px; margin-top:24px; line-height:1.35; }
+
+  /* ---------- 9. playlist ---------- */
+  #s-musica { background:#0b0b0f; align-items:center; text-align:center; }
+  #s-musica .artist { opacity:.75; margin-top:4px; font-size:13.5px; line-height:1.5; max-width:300px; }
+  .embedwrap { width:100%; margin-top:18px; box-shadow:0 20px 50px rgba(30,215,96,.18); border-radius:14px; }
+  .embedwrap iframe { display:block; border:0; border-radius:14px; }
+  .playbtn {
+    margin-top:18px; display:inline-flex; align-items:center; gap:10px;
+    background:#1ed760; color:#06150b; text-decoration:none;
+    font-weight:800; font-size:13.5px;
+    padding:12px 24px; border-radius:99px;
+  }
+
+  /* ---------- 10. duplas ---------- */
+  #s-duplas { background:#0d0613; }
+  #s-duplas .dupla { opacity:0; }
+  #s-duplas.active .dupla { animation:rise .45s cubic-bezier(.2,.9,.3,1) both; }
+  .duplaslist { margin-top:16px; display:flex; flex-direction:column; gap:5px; font-size:15px; font-weight:600; }
+  .duplaslist .dupla.fim { margin-bottom:8px; }
+  .duplaslist s { opacity:.45; text-decoration-color:#ff2e4f; text-decoration-thickness:2px; }
+  #s-duplas .punch2 {
+    margin-top:24px;
+    font-family:'Unbounded'; font-weight:900; font-size:23px; line-height:1.25;
+    background:linear-gradient(90deg, #ff7eb0, #ff2e4f);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+
+  /* ---------- 11. carta final ---------- */
+  #s-final { background:linear-gradient(170deg, rgba(43,10,61,.88) 0%, rgba(94,10,79,.86) 60%, rgba(160,22,87,.88) 100%), url("fotos/7.jpg") center/cover; text-align:center; align-items:center; }
+  #s-final .carta {
+    font-size:16px; line-height:1.75; font-style:italic;
+    max-width:310px; opacity:.96;
+  }
+  #s-final .ass { margin-top:20px; font-family:'Unbounded'; font-weight:700; font-size:14px; }
+  #s-final .felicidade { font-family:'Unbounded'; font-weight:900; font-size:26px; line-height:1.25; margin-bottom:20px; }
+  #replayBtn {
+    margin-top:26px; border:1px solid rgba(255,255,255,.5); background:transparent;
+    color:#fff; font-family:'Unbounded'; font-weight:700; font-size:13px;
+    padding:12px 28px; border-radius:99px; cursor:pointer;
+  }
+  .heartdrop { position:absolute; top:-40px; z-index:5; animation:fall linear forwards; pointer-events:none; }
+  @keyframes fall { to { transform:translateY(110vh) rotate(60deg); } }
+
+  .hint {
+    position:absolute; bottom:16px; left:0; right:0;
+    text-align:center; font-size:11px; opacity:.55;
+    letter-spacing:.08em; text-transform:uppercase; font-weight:600;
+    z-index:40; pointer-events:none;
+  }
+  .ate2027 { margin-top:18px; font-size:12px; opacity:.7; letter-spacing:.06em; text-transform:uppercase; font-weight:600; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee span, .floatheart, #cover .heartbig, #startBtn { animation:none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+
+  <!-- CAPA -->
+  <div id="cover">
+    <span class="floatheart" style="top:12%; left:14%;">🍒</span>
+    <span class="floatheart" style="top:20%; right:12%; animation-delay:1.2s;">💜</span>
+    <span class="floatheart" style="top:34%; left:8%; animation-delay:2.6s;">🎀</span>
+    <span class="floatheart" style="bottom:22%; left:18%; animation-delay:2s;">🖤</span>
+    <span class="floatheart" style="bottom:30%; right:10%; animation-delay:3.2s;">🍒</span>
+    <span class="floatheart" style="bottom:14%; right:20%; animation-delay:.6s;">💘</span>
+    <div class="heartbig">🍒</div>
+    <h1 id="coverNames">Nossa<br>Retrospectiva</h1>
+    <p id="coverSub">Dia dos Namorados • 12.06.2026</p>
+    <button id="startBtn">dar o play ▶</button>
+  </div>
+
+  <div class="bars" id="bars"></div>
+  <div class="brand"><span id="brandNames">retrô do amor</span><span>🍒 12 jun</span></div>
+
+  <!-- 1. DIAS JUNTOS -->
+  <section class="slide" id="s-dias">
+    <div class="blob" style="width:280px;height:280px;background:#ffd900;top:-80px;right:-90px;"></div>
+    <div class="blob" style="width:240px;height:240px;background:#ff2e4f;bottom:-60px;left:-80px;"></div>
+    <div class="kicker up">vocês estão juntos há</div>
+    <div class="bignum pop"><span data-count id="numDias">0</span></div>
+    <div class="display up d2" style="font-size:34px;">dias</div>
+    <p class="sub up d3" id="diasDetalhe"></p>
+    <p class="livesec up d4" id="liveSeg"></p>
+  </section>
+
+  <!-- 2. O PEDIDO -->
+  <section class="slide" id="s-pedido" data-dur="10000">
+    <div class="blob" style="width:260px;height:260px;background:#ffe26e;top:-70px;right:-70px;"></div>
+    <div class="kicker up">a origem de tudo</div>
+    <div class="display up d1" style="font-size:30px;">Quem pediu<br>quem?</div>
+    <div id="pedidoCards"></div>
+    <div class="punch up d4" id="pedidoPunch"></div>
+  </section>
+
+  <!-- 3. TE AMO -->
+  <section class="slide" id="s-teamo" data-dur="7000">
+    <div>
+      <div class="marquee"><span data-text="TE AMO ♥"></span></div>
+      <div class="marquee rev"><span data-text="TE AMO ♥"></span></div>
+    </div>
+    <div class="core">
+      <div class="kicker up">nesse tempo, vocês já disseram</div>
+      <div class="bignum pop" style="font-size:clamp(56px,18vw,86px);"><span data-count id="numTeamo">0</span></div>
+      <div class="display up d2" style="font-size:26px;">"te amo"</div>
+      <p class="up d3" style="margin-top:14px; opacity:.85; font-size:14px;">(estimativa científica. fonte: confia 🤞)</p>
+    </div>
+    <div>
+      <div class="marquee"><span data-text="TE AMO ♥"></span></div>
+      <div class="marquee rev"><span data-text="TE AMO ♥"></span></div>
+    </div>
+  </section>
+
+  <!-- 4. BECKS -->
+  <section class="slide" id="s-becks">
+    <div>
+      <div class="marquee"><span data-text="UM POR DIA 🍃"></span></div>
+      <div class="marquee rev"><span data-text="UM POR DIA 🍃"></span></div>
+    </div>
+    <div class="core">
+      <div class="kicker up">desde janeiro de 2026, vocês dividiram</div>
+      <div class="bignum pop" style="font-size:clamp(64px,22vw,100px);"><span data-count id="numBecks">0</span></div>
+      <div class="display up d2" style="font-size:26px;">becks</div>
+      <p class="sub up d3">Um por dia, religiosamente.<br>A única rotina que a gente nunca furou. 🍃</p>
+    </div>
+    <div>
+      <div class="marquee"><span data-text="UM POR DIA 🍃"></span></div>
+      <div class="marquee rev"><span data-text="UM POR DIA 🍃"></span></div>
+    </div>
+  </section>
+
+  <!-- 6½. EFEITOS COLATERAIS -->
+  <section class="slide" id="s-colateral">
+    <div class="blob" style="width:240px;height:240px;background:#8b5cf6;top:-80px;right:-80px;opacity:.35;"></div>
+    <div class="kicker up">efeitos colaterais observados</div>
+    <div class="polwrap">
+      <div class="pol pop">
+        <img src="fotos/5.jpg" alt="ela dormindo enrolada na coberta">
+        <div class="cap">registro científico, sem retoques</div>
+      </div>
+    </div>
+    <div class="titulo up d2">modo burrito:<br>ativado 😴</div>
+    <p class="sub up d3">A pesquisadora dormiu durante a coleta de dados.</p>
+  </section>
+
+  <!-- 7. ESTATÍSTICAS -->
+  <section class="slide" id="s-stats" data-dur="9000">
+    <div class="kicker up" style="opacity:.7;">dados sem fonte (confia)</div>
+    <div class="display up d1" style="font-size:26px;">Estatísticas que<br>ninguém pediu</div>
+    <div class="grid" id="gridStats"></div>
+  </section>
+
+  <!-- 8. KUROMI VS MY MELODY -->
+  <section class="slide" id="s-sanrio">
+    <div class="blob" style="width:240px;height:240px;background:#8b00ff;top:-80px;left:-80px;opacity:.35;"></div>
+    <div class="kicker up">a personalidade do casal é</div>
+    <div class="polwrap">
+      <div class="pol pop">
+        <img src="fotos/2.jpg" alt="ele de hello kitty e ela de kuromi">
+        <div class="cap">evidência fotográfica anexada aos autos</div>
+      </div>
+    </div>
+    <div class="veredito up d2">50% kuromi.<br>50% my melody.<br>100% vocês. 💜</div>
+  </section>
+
+  <!-- 8½. ROLO DA CÂMERA -->
+  <section class="slide" id="s-rolo" data-dur="11000">
+    <div class="kicker up">vazou o rolo da câmera 📸</div>
+    <div class="pols">
+      <div class="polwrap p1">
+        <div class="pol up d1">
+          <img src="fotos/6.jpg" alt="os dois segurando travesseiros">
+          <div class="cap">as crianças da casa 🛏️</div>
+        </div>
+      </div>
+      <div class="polwrap p2">
+        <div class="pol up d2">
+          <img src="fotos/3.jpg" alt="ela com a coroa do bacon day">
+          <div class="cap">a realeza do bacon day 👑</div>
+        </div>
+      </div>
+      <div class="polwrap p3">
+        <div class="pol up d3">
+          <img src="fotos/8.jpg" alt="ela espiando atrás dele">
+          <div class="cap">perseguição consentida desde 2023</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. PLAYLIST -->
+  <section class="slide" id="s-musica" data-dur="15000">
+    <div class="kicker up">curadoria de nível militar</div>
+    <div class="artist up d1" id="musArtista"></div>
+    <div class="embedwrap up d2 no-nav">
+      <iframe id="spotifyEmbed" title="Nossa Playlist no Spotify" width="100%" height="352" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+    </div>
+    <a class="playbtn up d3 no-nav" id="musLink" href="#" target="_blank" rel="noopener">▶ abrir no Spotify</a>
+  </section>
+
+  <!-- 10. DUPLAS -->
+  <section class="slide" id="s-duplas" data-dur="15000">
+    <div class="blob" style="width:240px;height:240px;background:#ff2e4f;bottom:-90px;right:-90px;opacity:.3;"></div>
+    <div class="duplaslist" id="listaDuplas"></div>
+    <div class="punch2 dupla" id="duplasP2"></div>
+  </section>
+
+  <!-- 11. CARTA FINAL -->
+  <section class="slide" id="s-final">
+    <div class="felicidade up">Feliz Dia dos<br>Namorados 🍒</div>
+    <p class="carta up d2" id="cartaTexto"></p>
+    <div class="ass up d3" id="cartaAss"></div>
+    <button id="replayBtn" class="up d4 no-nav">↺ ver de novo</button>
+    <div class="ate2027 up d5">nos vemos na retrospectiva 2027 💜</div>
+  </section>
+
+  <div class="hint" id="hint">toque para avançar • segure para pausar</div>
+</div>
+
+<script>
+/* ============================================================
+   👉👉👉  EDITE AQUI — TODOS OS DADOS DO CASAL  👈👈👈
+   ============================================================ */
+const DADOS = {
+  nomes: ["Lucas", "Kaylla"],
+  arrobas: ["baneplays", "isillybunny"],
+  inicio: "2023-10-26",              // dia em que ela pediu ele em namoro
+  inicioBecks: "2026-01-01",         // desde quando rola 1 beck por dia
+  teAmosPorDia: 10,                  // estimativa de "te amo" por dia 😄
+
+  pedido: [
+    {
+      data: "JUL 2023",
+      titulo: "Início da lore 📜",
+      desc: "Se conheceram. Ninguém avisou que era o começo da melhor timeline possível.",
+    },
+    {
+      data: "26 OUT 2023",
+      titulo: "Ela pediu primeiro 🏆",
+      desc: "Um dia antes do aniversário dele. Speedrun de melhor presente da história, any%.",
+    },
+    {
+      data: "17 DEZ 2023",
+      titulo: "Ele pediu de volta 💍",
+      desc: "Um dia antes do aniversário dela. Simetria perfeita, de primeira, sem ensaio.",
+    },
+  ],
+  pedidoPunch: "Combinaram sem combinar. ✨",
+
+  estatisticas: [                    // 👉 números divertidos (invente à vontade)
+    { numero: 9999, label: "beijos (auditoria pendente)", sufixo: "+" },
+    { numero: 1347, label: "memes enviados às 3h da manhã" },
+    { numero: 999,  label: "risadas de coisa sem graça nenhuma", sufixo: "+" },
+  ],
+
+  musica: {                          // a playlist que ele fez pra ela
+    artista: "Feita pelo baneplays, pra isillybunny. Zero skips permitidos. Dá o play 👇",
+    link: "https://open.spotify.com/playlist/65fROpgHk6bJoUpSM8cBzM?si=f6a6d4c81acf4f3b&pt=8be1d281770b5dc1043fd02b12dcb489",
+  },
+
+  duplas: [                          // 👉 versinho rimado: cada par de linhas rima
+    "six sem o <s>seven</s>",
+    "o natal sem o <s>kevin</s>",
+    "bora sem o <s>bill</s>",
+    "o bbb sem o <s>gil</s>",
+    "o bolo sem a <s>cereja</s> 🍒",
+    "o beck sem a <s>bandeja</s>",
+    "a my melody sem a <s>kuromi</s>",
+    "a pizza sem o <s>pepperoni</s>",
+    "o burro sem o <s>shrek</s>",
+    "a brisa sem o <s>beck</s>",
+    "o pink sem o <s>floyd</s>",
+    "a foto sem a <s>polaroid</s>",
+    "a festa junina sem o <s>quentão</s>",
+    "a praia sem o <s>verão</s>",
+    "o tio sem o <s>\"é pavê ou pacumê?\"</s>",
+  ],
+  duplasPunch: "sou assim sem você. 🥀",
+
+  carta: "Você me pediu em namoro um dia antes do meu aniversário e desde então é o melhor presente que eu já ganhei. Obrigado por dividir comigo seus hiperfocos, suas músicas, seus tweets e o beck de todo fim de dia. Seu jeito único de ver o mundo é a minha coisa favorita nele. Te amo do tamanho de um campo infinito de cerejas. Shine on, meu diamante. 💎🍒",
+};
+/* ================== fim da área de edição ================== */
+
+
+/* ---------- preenche os dados na página ---------- */
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => n.toLocaleString("pt-BR");
+const parseData = (iso) => new Date(+iso.slice(0,4), +iso.slice(5,7) - 1, +iso.slice(8,10));
+
+const inicio = parseData(DADOS.inicio);
+const hoje = new Date();
+const dias = Math.max(1, Math.floor((hoje - inicio) / 86400000));
+let anos = hoje.getFullYear() - inicio.getFullYear();
+let mesesResto = hoje.getMonth() - inicio.getMonth();
+if (hoje.getDate() < inicio.getDate()) mesesResto--;
+if (mesesResto < 0) { anos--; mesesResto += 12; }
+const mesesTot = anos * 12 + mesesResto;
+
+const becks = Math.max(1, Math.floor((hoje - parseData(DADOS.inicioBecks)) / 86400000) + 1);
+
+$("coverNames").innerHTML = `${DADOS.arrobas[0]}<br>&amp;<br>${DADOS.arrobas[1]}`;
+$("coverSub").textContent = `vulgo ${DADOS.nomes[0]} & ${DADOS.nomes[1]} • 12.06.2026`;
+$("brandNames").textContent = `${DADOS.nomes[0]} & ${DADOS.nomes[1]}`;
+
+$("numDias").dataset.target = dias;
+let detalhe = anos >= 1
+  ? `Isso dá ${anos} ano${anos > 1 ? "s" : ""}${mesesResto ? ` e ${mesesResto} ${mesesResto > 1 ? "meses" : "mês"}` : ""} de história…`
+  : `Isso dá ${mesesTot} ${mesesTot > 1 ? "meses" : "mês"} de história…`;
+detalhe += `<br>ou ${fmt(dias * 24)} horas de convivência e zero cancelamentos públicos.`;
+$("diasDetalhe").innerHTML = detalhe;
+
+$("pedidoCards").innerHTML = DADOS.pedido.map((p, i) =>
+  `<div class="pedidocard up d${i + 2}"><div class="data">${p.data}</div><div class="tt">${p.titulo}</div><div class="ds">${p.desc}</div></div>`).join("");
+$("pedidoPunch").textContent = DADOS.pedidoPunch;
+
+$("numTeamo").dataset.target = dias * DADOS.teAmosPorDia;
+$("numBecks").dataset.target = becks;
+
+document.querySelectorAll(".marquee span").forEach(s => {
+  s.textContent = (s.dataset.text + " ").repeat(28);
+});
+
+const statsAuto = [{ numero: dias, label: "dias se aturando (por escolha própria)" }, ...DADOS.estatisticas];
+$("gridStats").innerHTML = statsAuto.map((s, i) =>
+  `<div class="card up d${i + 1}"><div class="n"><span data-count data-target="${s.numero}"></span>${s.sufixo || ""}</div><div class="l">${s.label}</div></div>`).join("");
+
+$("musArtista").textContent = DADOS.musica.artista;
+$("musLink").href = DADOS.musica.link;
+const idPlaylist = (DADOS.musica.link.match(/playlist\/([A-Za-z0-9]+)/) || [])[1];
+if (idPlaylist) $("spotifyEmbed").src = `https://open.spotify.com/embed/playlist/${idPlaylist}?utm_source=generator&theme=0`;
+
+/* contador de segundos ao vivo — cada um valeu a pena */
+function tickSegundos() {
+  const s = Math.floor((Date.now() - inicio.getTime()) / 1000);
+  $("liveSeg").innerHTML = `…e contando: <b>${fmt(s)}</b> segundos.<br>cada um valeu a pena.`;
+}
+tickSegundos();
+setInterval(tickSegundos, 1000);
+
+$("listaDuplas").innerHTML = DADOS.duplas.map((d, i) =>
+  `<div class="dupla${i % 2 ? " fim" : ""}" style="animation-delay:${(0.15 + i * 0.38).toFixed(2)}s">${d}</div>`).join("");
+$("duplasP2").textContent = DADOS.duplasPunch;
+$("duplasP2").style.animationDelay = (0.7 + DADOS.duplas.length * 0.38).toFixed(2) + "s";
+
+$("cartaTexto").textContent = `“${DADOS.carta}”`;
+$("cartaAss").textContent = `— ${DADOS.nomes[0]}, com todo o amor do mundo`;
+
+/* ---------- motor de stories ---------- */
+const slides = [...document.querySelectorAll(".slide")];
+const DUR = 8000;
+const barsEl = $("bars");
+slides.forEach(() => {
+  const seg = document.createElement("div");
+  seg.className = "seg";
+  seg.innerHTML = '<div class="fill"></div>';
+  barsEl.appendChild(seg);
+});
+const fills = [...barsEl.querySelectorAll(".fill")];
+
+let idx = 0, t0 = 0, elapsed = 0, paused = false, started = false, confettiTimer = null;
+
+function runCounters(slide) {
+  slide.querySelectorAll("[data-count]").forEach(el => {
+    const target = +el.dataset.target || 0;
+    const start = performance.now(), dur = 1600;
+    function step(now) {
+      const p = Math.min(1, (now - start) / dur);
+      const ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(Math.round(target * ease));
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  });
+}
+
+function startConfetti() {
+  const hearts = ["💜","❤️","🍒","💖","🖤","🎀","🍒"];
+  confettiTimer = setInterval(() => {
+    const h = document.createElement("span");
+    h.className = "heartdrop";
+    h.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+    h.style.left = Math.random() * 95 + "%";
+    h.style.fontSize = 14 + Math.random() * 22 + "px";
+    h.style.animationDuration = 3 + Math.random() * 3 + "s";
+    h.addEventListener("animationend", () => h.remove());
+    $("stage").appendChild(h);
+  }, 220);
+}
+function stopConfetti() {
+  clearInterval(confettiTimer);
+  confettiTimer = null;
+}
+
+function setSlide(i) {
+  idx = Math.max(0, Math.min(slides.length - 1, i));
+  slides.forEach((s, j) => s.classList.toggle("active", j === idx));
+  fills.forEach((f, j) => f.style.width = j < idx ? "100%" : "0%");
+  elapsed = 0;
+  t0 = performance.now();
+  runCounters(slides[idx]);
+  if (idx === slides.length - 1) { if (!confettiTimer) startConfetti(); }
+  else stopConfetti();
+  $("hint").style.display = idx === 0 ? "" : "none";
+}
+
+function next() { if (idx < slides.length - 1) setSlide(idx + 1); }
+function prev() { setSlide(idx - 1); }
+
+function tick(now) {
+  if (started) {
+    if (!paused) {
+      elapsed = now - t0;
+      const durAtual = +slides[idx].dataset.dur || DUR;
+      const p = Math.min(1, elapsed / durAtual);
+      fills[idx].style.width = p * 100 + "%";
+      if (p >= 1 && idx < slides.length - 1) next();
+    } else {
+      t0 = now - elapsed;
+    }
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+/* navegação: toque avança/volta, segurar pausa */
+const stage = $("stage");
+let holdTimer = null, wasHold = false;
+
+stage.addEventListener("pointerdown", (e) => {
+  if (!started || e.target.closest(".no-nav")) return;
+  wasHold = false;
+  holdTimer = setTimeout(() => { wasHold = true; paused = true; }, 260);
+});
+stage.addEventListener("pointerup", (e) => {
+  if (!started || e.target.closest(".no-nav")) return;
+  clearTimeout(holdTimer);
+  if (wasHold) { paused = false; return; }
+  const r = stage.getBoundingClientRect();
+  (e.clientX - r.left) < r.width * 0.33 ? prev() : next();
+});
+stage.addEventListener("pointercancel", () => { clearTimeout(holdTimer); paused = false; });
+
+document.addEventListener("keydown", (e) => {
+  if (!started) return;
+  if (e.key === "ArrowRight" || e.key === " ") next();
+  if (e.key === "ArrowLeft") prev();
+});
+
+$("startBtn").addEventListener("click", () => {
+  $("cover").classList.add("hidden");
+  started = true;
+  setSlide(0);
+});
+$("replayBtn").addEventListener("click", (e) => {
+  e.stopPropagation();
+  setSlide(0);
+});
+</script>
+</body>
+</html>
