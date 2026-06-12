@@ -54,6 +54,11 @@
     z-index:50; font-size:11px; font-weight:600;
     letter-spacing:.14em; text-transform:uppercase; opacity:.85;
   }
+  #muteBtn {
+    background:none; border:none; cursor:pointer;
+    font-size:15px; line-height:1; padding:2px;
+    visibility:hidden;
+  }
 
   /* ---------- slides ---------- */
   .slide {
@@ -203,11 +208,18 @@
 
   /* ---------- 9. playlist ---------- */
   #s-musica { background:#0b0b0f; align-items:center; text-align:center; }
-  #s-musica .artist { opacity:.75; margin-top:4px; font-size:13.5px; line-height:1.5; max-width:300px; }
-  .embedwrap { width:100%; margin-top:18px; box-shadow:0 20px 50px rgba(30,215,96,.18); border-radius:14px; }
-  .embedwrap iframe { display:block; border:0; border-radius:14px; }
+  .album {
+    width:min(52vw, 200px); aspect-ratio:1;
+    border-radius:18px;
+    background:linear-gradient(140deg, #ff2e4f, #8b00ff 60%, #ff2e88);
+    display:grid; place-items:center;
+    font-size:66px;
+    box-shadow:0 24px 60px rgba(255,46,136,.45);
+  }
+  #s-musica .title { font-family:'Unbounded'; font-weight:900; font-size:23px; margin-top:24px; }
+  #s-musica .artist { opacity:.75; margin-top:10px; font-size:13.5px; line-height:1.5; max-width:300px; }
   .playbtn {
-    margin-top:18px; display:inline-flex; align-items:center; gap:10px;
+    margin-top:20px; display:inline-flex; align-items:center; gap:10px;
     background:#1ed760; color:#06150b; text-decoration:none;
     font-weight:800; font-size:13.5px;
     padding:12px 24px; border-radius:99px;
@@ -273,8 +285,16 @@
     <button id="startBtn">dar o play ▶</button>
   </div>
 
+  <audio id="trilha" preload="auto"></audio>
+
   <div class="bars" id="bars"></div>
-  <div class="brand"><span id="brandNames">retrô do amor</span><span>🍒 12 jun</span></div>
+  <div class="brand">
+    <span id="brandNames">retrô do amor</span>
+    <span style="display:flex; align-items:center; gap:10px;">
+      <button id="muteBtn" class="no-nav" title="som">🔊</button>
+      <span>🍒 12 jun</span>
+    </span>
+  </div>
 
   <!-- 1. DIAS JUNTOS -->
   <section class="slide" id="s-dias">
@@ -392,13 +412,12 @@
   </section>
 
   <!-- 9. PLAYLIST -->
-  <section class="slide" id="s-musica" data-dur="15000">
+  <section class="slide" id="s-musica" data-dur="9000">
     <div class="kicker up">curadoria de nível militar</div>
-    <div class="artist up d1" id="musArtista"></div>
-    <div class="embedwrap up d2 no-nav">
-      <iframe id="spotifyEmbed" title="Nossa Playlist no Spotify" width="100%" height="352" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-    </div>
-    <a class="playbtn up d3 no-nav" id="musLink" href="#" target="_blank" rel="noopener">▶ abrir no Spotify</a>
+    <div class="album pop">🍒</div>
+    <div class="title up d2">Nossa Playlist</div>
+    <div class="artist up d3" id="musArtista"></div>
+    <a class="playbtn up d4 no-nav" id="musLink" href="#" target="_blank" rel="noopener">▶ abrir no Spotify</a>
   </section>
 
   <!-- 10. DUPLAS -->
@@ -457,8 +476,14 @@ const DADOS = {
   ],
 
   musica: {                          // a playlist que ele fez pra ela
-    artista: "Feita pelo baneplays, pra isillybunny. Zero skips permitidos. Dá o play 👇",
+    artista: "Feita pelo baneplays, pra isillybunny. Zero skips permitidos.",
     link: "https://open.spotify.com/playlist/65fROpgHk6bJoUpSM8cBzM?si=f6a6d4c81acf4f3b&pt=8be1d281770b5dc1043fd02b12dcb489",
+  },
+
+  trilha: {                          // a música que toca durante a retrospectiva
+    arquivo: "music/shine-on.mp3",
+    comecarEm: 495,                  // 8:15 — direto na melhor parte 💎
+    volume: 0.9,
   },
 
   duplas: [                          // 👉 versinho rimado: cada par de linhas rima
@@ -529,8 +554,68 @@ $("gridStats").innerHTML = statsAuto.map((s, i) =>
 
 $("musArtista").textContent = DADOS.musica.artista;
 $("musLink").href = DADOS.musica.link;
-const idPlaylist = (DADOS.musica.link.match(/playlist\/([A-Za-z0-9]+)/) || [])[1];
-if (idPlaylist) $("spotifyEmbed").src = `https://open.spotify.com/embed/playlist/${idPlaylist}?utm_source=generator&theme=0`;
+
+/* trilha sonora — começa no toque do play, direto em 8:15, com fade-in */
+const trilha = $("trilha");
+trilha.src = DADOS.trilha.arquivo;
+
+function tocarTrilha() {
+  const alvo = DADOS.trilha.comecarEm;
+  let pronto = false; // já aterrissou em 8:15?
+  trilha.volume = 0;  // silêncio até lá — ela não ouve a parte errada
+
+  const iniciarFade = () => {
+    const fade = setInterval(() => {
+      trilha.volume = Math.min(DADOS.trilha.volume, trilha.volume + 0.05);
+      if (trilha.volume >= DADOS.trilha.volume) clearInterval(fade);
+    }, 120);
+  };
+  const aterrissar = () => {
+    if (pronto) return;
+    pronto = true;
+    clearInterval(espera);
+    iniciarFade();
+  };
+  const cobre = (ranges) => {
+    for (let i = 0; i < ranges.length; i++) if (ranges.end(i) >= alvo) return true;
+    return false;
+  };
+  const tentarSeek = () => {
+    if (!pronto && trilha.readyState >= 1 && (cobre(trilha.seekable) || cobre(trilha.buffered))) {
+      trilha.currentTime = alvo;
+      aterrissar();
+    }
+  };
+  const espera = setInterval(tentarSeek, 250);
+  tentarSeek();
+  trilha.play().catch(() => {});
+
+  // plano B: servidor sem suporte a range — baixa tudo e toca de um blob
+  setTimeout(() => {
+    if (pronto) return;
+    fetch(DADOS.trilha.arquivo)
+      .then(r => r.blob())
+      .then(b => {
+        if (pronto) return;
+        clearInterval(espera);
+        trilha.src = URL.createObjectURL(b);
+        trilha.addEventListener("loadedmetadata", () => {
+          trilha.currentTime = alvo;
+          trilha.play().catch(() => {});
+          aterrissar();
+        }, { once: true });
+      })
+      .catch(() => {});
+  }, 2000);
+
+  $("muteBtn").style.visibility = "visible";
+}
+
+$("muteBtn").addEventListener("click", (e) => {
+  e.stopPropagation();
+  trilha.muted = !trilha.muted;
+  $("muteBtn").textContent = trilha.muted ? "🔇" : "🔊";
+});
 
 /* contador de segundos ao vivo — cada um valeu a pena */
 function tickSegundos() {
@@ -652,6 +737,7 @@ document.addEventListener("keydown", (e) => {
 $("startBtn").addEventListener("click", () => {
   $("cover").classList.add("hidden");
   started = true;
+  tocarTrilha();
   setSlide(0);
 });
 $("replayBtn").addEventListener("click", (e) => {
