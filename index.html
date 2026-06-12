@@ -200,6 +200,13 @@
   }
   .card .n { font-family:'Unbounded'; font-weight:900; font-size:28px; color:#c4005f; }
   .card .l { font-size:12px; font-weight:600; margin-top:6px; line-height:1.35; }
+  .card.wide { grid-column:1 / -1; display:flex; align-items:center; gap:16px; }
+  .card.wide .l { margin-top:0; font-size:13px; }
+
+  /* ---------- 7½. date favorito: lámen ---------- */
+  #s-lamen { background:linear-gradient(165deg, #a82711, #ff7a3c); }
+  #s-lamen .lamenbig { font-size:clamp(84px, 26vw, 110px); line-height:1; }
+  #s-lamen .sub { font-size:15px; opacity:.92; margin-top:14px; line-height:1.55; }
 
   /* ---------- 8. kuromi vs my melody ---------- */
   #s-sanrio { background:linear-gradient(155deg, #160b22, #3d1146); align-items:center; text-align:center; }
@@ -242,8 +249,8 @@
   /* ---------- 11. carta final ---------- */
   #s-final { background:linear-gradient(170deg, rgba(43,10,61,.88) 0%, rgba(94,10,79,.86) 60%, rgba(160,22,87,.88) 100%), url("fotos/7.jpg") center/cover; text-align:center; align-items:center; }
   #s-final .carta {
-    font-size:16px; line-height:1.75; font-style:italic;
-    max-width:310px; opacity:.96;
+    font-size:14px; line-height:1.65; font-style:italic;
+    max-width:320px; opacity:.96;
   }
   #s-final .ass { margin-top:20px; font-family:'Unbounded'; font-weight:700; font-size:14px; }
   #s-final .felicidade { font-family:'Unbounded'; font-weight:900; font-size:26px; line-height:1.25; margin-bottom:20px; }
@@ -337,18 +344,18 @@
   <!-- 4. BECKS -->
   <section class="slide" id="s-becks">
     <div>
-      <div class="marquee"><span data-text="UM POR DIA 🍃"></span></div>
-      <div class="marquee rev"><span data-text="UM POR DIA 🍃"></span></div>
+      <div class="marquee"><span data-text="DOIS POR DIA 🍃"></span></div>
+      <div class="marquee rev"><span data-text="DOIS POR DIA 🍃"></span></div>
     </div>
     <div class="core">
       <div class="kicker up">desde janeiro de 2026, vocês dividiram</div>
       <div class="bignum pop" style="font-size:clamp(64px,22vw,100px);"><span data-count id="numBecks">0</span></div>
       <div class="display up d2" style="font-size:26px;">becks</div>
-      <p class="sub up d3">Um por dia, religiosamente.<br>A única rotina que a gente nunca furou. 🍃</p>
+      <p class="sub up d3">Dois por dia, religiosamente.<br>A única rotina que a gente nunca furou. 🍃</p>
     </div>
     <div>
-      <div class="marquee"><span data-text="UM POR DIA 🍃"></span></div>
-      <div class="marquee rev"><span data-text="UM POR DIA 🍃"></span></div>
+      <div class="marquee"><span data-text="DOIS POR DIA 🍃"></span></div>
+      <div class="marquee rev"><span data-text="DOIS POR DIA 🍃"></span></div>
     </div>
   </section>
 
@@ -371,6 +378,15 @@
     <div class="kicker up" style="opacity:.7;">dados sem fonte (confia)</div>
     <div class="display up d1" style="font-size:26px;">Estatísticas que<br>ninguém pediu</div>
     <div class="grid" id="gridStats"></div>
+  </section>
+
+  <!-- 7½. DATE FAVORITO -->
+  <section class="slide" id="s-lamen">
+    <div class="blob" style="width:260px;height:260px;background:#ffd900;top:-70px;right:-70px;"></div>
+    <div class="kicker up">o date nº 1 de 2025/26</div>
+    <div class="lamenbig pop">🍜</div>
+    <div class="display up d2" style="font-size:clamp(36px,12vw,48px);">comer<br>lámen</div>
+    <p class="sub up d3">Disparado em primeiro lugar.<br>Os outros dates nem competiram.</p>
   </section>
 
   <!-- 8. KUROMI VS MY MELODY -->
@@ -447,7 +463,8 @@ const DADOS = {
   nomes: ["Lucas", "Kaylla"],
   arrobas: ["baneplays", "isillybunny"],
   inicio: "2023-10-26",              // dia em que ela pediu ele em namoro
-  inicioBecks: "2026-01-01",         // desde quando rola 1 beck por dia
+  inicioBecks: "2026-01-01",         // desde quando rola o ritual
+  becksPorDia: 2,                    // becks por dia 🍃
   teAmosPorDia: 10,                  // estimativa de "te amo" por dia 😄
 
   pedido: [
@@ -473,6 +490,7 @@ const DADOS = {
     { numero: 9999, label: "beijos (auditoria pendente)", sufixo: "+" },
     { numero: 1347, label: "memes enviados às 3h da manhã" },
     { numero: 999,  label: "risadas de coisa sem graça nenhuma", sufixo: "+" },
+    { numero: 4,    label: "casas diferentes que já foram nosso lar 🏠", largo: true },
   ],
 
   musica: {                          // a playlist que ele fez pra ela
@@ -505,7 +523,7 @@ const DADOS = {
   ],
   duplasPunch: "sou assim sem você. 🥀",
 
-  carta: "Você me pediu em namoro um dia antes do meu aniversário e desde então é o melhor presente que eu já ganhei. Obrigado por dividir comigo seus hiperfocos, suas músicas, seus tweets e o beck de todo fim de dia. Seu jeito único de ver o mundo é a minha coisa favorita nele. Te amo do tamanho de um campo infinito de cerejas. Shine on, meu diamante. 💎🍒",
+  carta: "Você é a minha Shine On You Crazy Diamond do Pink Floyd, amo cantar todo dia pra você e amo ouvir você cantando todo dia pra mim. Agradeço a Deus todos os dias por ter colocado você na minha vida. Você é minha melhor amiga, meu amor, meu tudo!\nTe amo muito, você é a minha pessoa favorita de todos os dias. Fiz essa bobeirinha aqui pra tentar te mostrar o quanto gosto de você — e agora vai ser um ritual: você vai receber uma dessas todo Dia dos Namorados.",
 };
 /* ================== fim da área de edição ================== */
 
@@ -524,7 +542,7 @@ if (hoje.getDate() < inicio.getDate()) mesesResto--;
 if (mesesResto < 0) { anos--; mesesResto += 12; }
 const mesesTot = anos * 12 + mesesResto;
 
-const becks = Math.max(1, Math.floor((hoje - parseData(DADOS.inicioBecks)) / 86400000) + 1);
+const becks = Math.max(1, (Math.floor((hoje - parseData(DADOS.inicioBecks)) / 86400000) + 1) * (DADOS.becksPorDia || 1));
 
 $("coverNames").innerHTML = `${DADOS.arrobas[0]}<br>&amp;<br>${DADOS.arrobas[1]}`;
 $("coverSub").textContent = `vulgo ${DADOS.nomes[0]} & ${DADOS.nomes[1]} • 12.06.2026`;
@@ -550,7 +568,7 @@ document.querySelectorAll(".marquee span").forEach(s => {
 
 const statsAuto = [{ numero: dias, label: "dias se aturando (por escolha própria)" }, ...DADOS.estatisticas];
 $("gridStats").innerHTML = statsAuto.map((s, i) =>
-  `<div class="card up d${i + 1}"><div class="n"><span data-count data-target="${s.numero}"></span>${s.sufixo || ""}</div><div class="l">${s.label}</div></div>`).join("");
+  `<div class="card up d${Math.min(i + 1, 5)}${s.largo ? " wide" : ""}"><div class="n"><span data-count data-target="${s.numero}"></span>${s.sufixo || ""}</div><div class="l">${s.label}</div></div>`).join("");
 
 $("musArtista").textContent = DADOS.musica.artista;
 $("musLink").href = DADOS.musica.link;
@@ -630,7 +648,7 @@ $("listaDuplas").innerHTML = DADOS.duplas.map((d, i) =>
 $("duplasP2").textContent = DADOS.duplasPunch;
 $("duplasP2").style.animationDelay = (0.7 + DADOS.duplas.length * 0.38).toFixed(2) + "s";
 
-$("cartaTexto").textContent = `“${DADOS.carta}”`;
+$("cartaTexto").innerHTML = `“${DADOS.carta.replace(/\n+/g, "<br><br>")}”`;
 $("cartaAss").textContent = `— ${DADOS.nomes[0]}, com todo o amor do mundo`;
 
 /* ---------- motor de stories ---------- */
